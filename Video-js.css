@@ -334,6 +334,8 @@
 }
 
 .video-js {
+  width:100%;
+  padding-bottom: 56.25%;
   display: block;
   vertical-align: top;
   box-sizing: border-box;
