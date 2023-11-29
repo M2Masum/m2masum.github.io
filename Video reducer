@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Video File Reducer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        input, button, select {
+            margin: 10px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        video {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="videoInput" accept="video/*">
+    
+    <label for="quality">Select Video Quality:</label>
+    <select id="quality">
+        <option value="0.1">Low</option>
+        <option value="0.5" selected>Medium</option>
+        <option value="0.8">High</option>
+    </select>
+
+    <label for="resolution">Select Video Resolution:</label>
+    <select id="resolution">
+        <option value="0.5">Low</option>
+        <option value="1" selected>Medium</option>
+        <option value="2">High</option>
+    </select>
+
+    <button onclick="reduceVideoSize()">Reduce Size</button>
+    
+    <video id="originalVideo" controls></video>
+    <video id="reducedVideo" controls></video>
+
+    <script>
+        document.getElementById('videoInput').addEventListener('change', function() {
+            const originalVideo = document.getElementById('originalVideo');
+            const reducedVideo = document.getElementById('reducedVideo');
+            const input = this;
+
+            const file = input.files[0];
+            const url = URL.createObjectURL(file);
+
+            originalVideo.src = url;
+        });
+
+        function reduceVideoSize() {
+            const originalVideo = document.getElementById('originalVideo');
+            const reducedVideo = document.getElementById('reducedVideo');
+            const quality = parseFloat(document.getElementById('quality').value);
+            const resolution = parseFloat(document.getElementById('resolution').value);
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            // Set the canvas dimensions based on the selected resolution
+            canvas.width = originalVideo.videoWidth * resolution;
+            canvas.height = originalVideo.videoHeight * resolution;
+
+            // Draw the video frame on the canvas
+            context.drawImage(originalVideo, 0, 0, canvas.width, canvas.height);
+
+            // Convert the canvas to a Blob and create a reduced size video with selected quality
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                reducedVideo.src = url;
+            }, 'video/webm', quality);
+        }
+    </script>
+</body>
+</html>
